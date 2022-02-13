@@ -1,5 +1,5 @@
 const express = require ('express');
-const {getRole,getCompany,getCompanyId,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightProducerFree,getFreightProducerTaken,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad, updateFreight}=require("../dbService/dbService");
+const {getRole,getCompany,getCompanyId,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightProducerFree,getFreightProducerTaken,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad}=require("../dbService/dbService");
 const router = express.Router();
 
 router.get("/register", async(req,res)=>{
@@ -109,6 +109,9 @@ router.post("/producer/data/:id", async(req,res)=>{
     const report=await updateCompany(data.idCompany,data.companyName,data.VAT,data.email,data.password);
     res.send("Uspesna izmena!");
 });
+router.get("/producer/freight", async(req,res)=>{
+    res.send("Da be da");
+});
 router.post("/producer/freight/:id", async (req,res)=>{
     const id=req.params.id;
     const data={
@@ -123,22 +126,6 @@ router.post("/producer/freight/:id", async (req,res)=>{
     }
     const report=await sendFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idProducer,data.idLoad);
     res.send("Uspesan unos!");
-});
-router.post("/producer/freight/update/:id", async (req,res)=>{
-    const id=req.params.id;
-    const data={
-        weight:req.body.weight,
-        length:req.body.length,
-        warehouse:req.body.warehouse,
-        destination:req.body.destination,
-        note:req.body.note,
-        price:req.body.price,
-        idLoad:req.body.idLoad
-    }
-    const report=await updateFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idLoad,id);
-    res.send("Uspesan promena");
-});
-
-
+})
 
 module.exports=router; 

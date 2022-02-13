@@ -94,13 +94,7 @@ async function getFreightSupplierTaken(id)
 {
     let sql="SELECT * FROM freight WHERE idSupplier=?"
     return request.query(sql,[id]);
-}
-async function updateFreight(weight,length,warehouse,destination,note,price,idLoad,id)
-{
-    let sql="UPDATE find.freight SET freight.weight=?,freight.length=?,freight.warehouse=?,freight.destination=?,freight.note=?,freight.price=?,freight.idLoad=? WHERE idFreight=?"
-    return request.query(sql,[weight,length,warehouse,destination,note,price,idLoad,id])
-}
-async function takeFreight(idSuplier,idFreight)
+}async function takeFreight(idSuplier,idFreight)
 {
     let sql="UPDATE find.freight SET freight.idSupplier=?, freight.idStatus=2 WHERE freight.idFreight=?"
     return request.query(sql,[idSuplier,idFreight]);
@@ -125,4 +119,3 @@ exports.getFreightProducerTaken=getFreightProducerTaken;
 exports.getFreightSupplierFree=getFreightSupplierFree;
 exports.getFreightSupplierTaken=getFreightSupplierTaken;
 exports.takeFreight=takeFreight;
-exports.updateFreight=updateFreight;
