@@ -4,7 +4,7 @@ exports.initPool=()=>{
     pool= mysql.createPool({
         host     : 'localhost',
         user     : 'root',
-        password : 'root1',
+        password : 'root',
         database : "find"
 });
 }
