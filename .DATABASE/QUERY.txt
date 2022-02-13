@@ -1,0 +1,112 @@
+CREATE TABLE `find`.`Status` (
+  `idStatus` INT NOT NULL AUTO_INCREMENT,
+  `statusName` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`idStatus`));
+
+INSERT INTO `find`.`status` (`idStatus`, `statusName`) VALUES ('1', 'Free');
+INSERT INTO `find`.`status` (`idStatus`, `statusName`) VALUES ('2', 'In progress');
+INSERT INTO `find`.`status` (`idStatus`, `statusName`) VALUES ('3', 'Completed');
+
+CREATE TABLE `find`.`load` (
+  `idLoad` INT NOT NULL AUTO_INCREMENT,
+  `loadType` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`idLoad`));
+
+INSERT INTO `find`.`load` (`idLoad`, `loadType`) VALUES ('1', 'Furniture');
+INSERT INTO `find`.`load` (`idLoad`, `loadType`) VALUES ('2', 'Fruits');
+
+CREATE TABLE `find`.`admin` (
+  `idAdmin` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `surname` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `idRol` INT NOT NULL,
+  PRIMARY KEY (`idAdmin`),
+  INDEX `idRol_idx` (`idRol` ASC) VISIBLE,
+  CONSTRAINT `idRol`
+    FOREIGN KEY (`idRol`)
+    REFERENCES `find`.`role` (`idRole`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT);
+
+
+INSERT INTO `find`.`admin` (`idAdmin`, `name`, `surname`, `email`, `password`, `idRol`) VALUES ('1', 'Nikola', 'Ilic', 'nikola.ilic774@gmail.com', '123', '1');
+INSERT INTO `find`.`admin` (`idAdmin`, `name`, `surname`, `email`, `password`, `idRol`) VALUES ('2', 'Milos', 'Stanojevic', 'm.stanojevic@gmail.com', '123', '1');
+
+CREATE TABLE `find`.`role` (
+  `idRole` INT NOT NULL AUTO_INCREMENT,
+  `roleName` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`idRole`));
+
+INSERT INTO `find`.`role` (`idRole`, `roleName`) VALUES ('1', 'Admin');
+INSERT INTO `find`.`role` (`idRole`, `roleName`) VALUES ('2', 'Producer');
+INSERT INTO `find`.`role` (`idRole`, `roleName`) VALUES ('3', 'Supplier');
+
+CREATE TABLE `find`.`company` (
+  `idCompany` INT NOT NULL AUTO_INCREMENT,
+  `companyName` VARCHAR(100) NOT NULL,
+  `VAT` INT NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(200) NOT NULL,
+  `idRol` INT NOT NULL,
+  PRIMARY KEY (`idCompany`),
+  INDEX `idRol_idx` (`idRol` ASC) VISIBLE,
+  CONSTRAINT ``
+    FOREIGN KEY (`idRol`)
+    REFERENCES `find`.`role` (`idRole`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT);
+
+INSERT INTO `find`.`company` (`idCompany`, `companyName`, `VAT`, `email`, `password`, `idRol`) VALUES ('1', 'Simpo', '2254', 'simpo2022@gmail.com', '123', '2');
+INSERT INTO `find`.`company` (`idCompany`, `companyName`, `VAT`, `email`, `password`, `idRol`) VALUES ('2', 'Milsped', '2255', 'milsped2022@gmail.com', '123', '3');
+
+CREATE TABLE `find`.`freight` (
+  `idFreight` INT NOT NULL AUTO_INCREMENT,
+  `weight` FLOAT NOT NULL,
+  `length` FLOAT NOT NULL,
+  `warehouse` VARCHAR(100) NOT NULL,
+  `destination` VARCHAR(100) NOT NULL,
+  `note` VARCHAR(100) NOT NULL,
+  `idProducer` INT NOT NULL,
+  `idSupplier` INT NOT NULL,
+  `idStatus` INT NOT NULL,
+  `idLoad` INT NOT NULL,
+  PRIMARY KEY (`idFreight`),
+  INDEX `_idx` (`idProducer` ASC) VISIBLE,
+  INDEX `dadsa_idx` (`idSupplier` ASC) VISIBLE,
+  INDEX `fkStatus_idx` (`idStatus` ASC) VISIBLE,
+  INDEX `fkLoad_idx` (`idLoad` ASC) VISIBLE,
+  CONSTRAINT `fkProducer`
+    FOREIGN KEY (`idProducer`)
+    REFERENCES `find`.`company` (`idCompany`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fkSuplier`
+    FOREIGN KEY (`idSupplier`)
+    REFERENCES `find`.`company` (`idCompany`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fkStatus`
+    FOREIGN KEY (`idStatus`)
+    REFERENCES `find`.`status` (`idStatus`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fkLoad`
+    FOREIGN KEY (`idLoad`)
+    REFERENCES `find`.`load` (`idLoad`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT);
+
+ALTER TABLE `find`.`freight` 
+DROP FOREIGN KEY `fkSuplier`;
+ALTER TABLE `find`.`freight` 
+CHANGE COLUMN `idSupplier` `idSupplier` INT NULL ;
+ALTER TABLE `find`.`freight` 
+ADD CONSTRAINT `fkSuplier`
+  FOREIGN KEY (`idSupplier`)
+  REFERENCES `find`.`company` (`idCompany`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+INSERT INTO `find`.`freight` (`idFreight`, `weight`, `length`, `warehouse`, `destination`, `note`, `idProducer`, `idStatus`, `idLoad`) VALUES ('1', '11.5', '12.4', 'Nis', 'Lisbon', 'fragile', '1', '1', '1');
