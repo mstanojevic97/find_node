@@ -1,5 +1,5 @@
 const express = require ('express');
-const {getRole,getCompany,getCompanyId,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightProducerFree,getFreightProducerTaken,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad}=require("../dbService/dbService");
+const {getRole,getCompany,getCompanyId,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightProducerFree,getFreightProducerTaken,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad, updateFreight}=require("../dbService/dbService");
 const router = express.Router();
 
 router.get("/register", async(req,res)=>{
@@ -97,10 +97,9 @@ router.get("/producer/data/:id", async(req,res)=>{
     }
     res.send(producer);
 });
-router.post("/producer/data/:id", async(req,res)=>{
-    const id=req.params.id;
+router.post("/producer/data", async(req,res)=>{
     const data={
-        idCompany:id,
+        idCompany:req.body.id,
         companyName:req.body.companyName,
         VAT:req.body.VAT,
         email:req.body.email,
@@ -113,7 +112,7 @@ router.get("/producer/freight", async(req,res)=>{
     res.send("Da be da");
 });
 router.post("/producer/freight/:id", async (req,res)=>{
-    const id=req.params.id;
+    const id = req.params.id;
     const data={
         weight:req.body.weight,
         length:req.body.length,
@@ -125,7 +124,22 @@ router.post("/producer/freight/:id", async (req,res)=>{
         idLoad:req.body.idLoad
     }
     const report=await sendFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idProducer,data.idLoad);
-    res.send("Uspesan unos!");
+    res.send({insertId : report.insertId});
 })
+
+router.post("/producer/updateFreight", async (req,res)=>{
+    const data={
+        id: req.body.id,
+        weight:req.body.weight,
+        length:req.body.length,
+        warehouse:req.body.warehouse,
+        destination:req.body.destination,
+        note:req.body.note,
+        price:req.body.price,
+        idLoad:req.body.idLoad
+    }
+    const report=await updateFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idLoad,data.id);
+    res.send("Uspesan promena");
+});
 
 module.exports=router; 
