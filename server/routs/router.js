@@ -1,24 +1,7 @@
 const express = require ('express');
-const {getRole,getCompany,getCompanyId,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightProducerFree,getFreightProducerTaken,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad, updateFreight}=require("../dbService/dbService");
+const {getRole,getCompany,sendCompany,deleteCompany,updateCompany,getCompanyEmail,getAdminId,getAdminEmail,sendAdmin,updateAdmin,deleteAdmin,sendFreight,getFreight,getFreightSupplierFree,getFreightSupplierTaken,takeFreight,getLoad, updateFreight}=require("../dbService/dbService");
 const router = express.Router();
 
-router.get("/producer/:id",async(req,res)=>{
-    const id = req.params.id;
-    const producer=await getCompanyId(id);
-    const producerData={
-        companyName:producer[0].companyName,
-        VAT:producer[0].VAT,
-        email:producer[0].email
-    }
-    const freightTaken = await getFreightProducerTaken(id);
-    const freightFree = await getFreightProducerFree(id);
-    res.json({
-        "producer": producerData,
-        "freightFree":freightFree,
-        "freightTaken":freightTaken
-    });
-
-});
 router.get("/producer/data/:id", async(req,res)=>{
     const id = req.params.id;
     const data=await getCompanyId(id);
