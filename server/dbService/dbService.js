@@ -5,6 +5,11 @@ async function getLoad(load)
     let sql="SELECT * FROM find.load WHERE loadType=?"
     return request.query(sql,[load]);
 }
+async function getRoleName(name)
+{
+    let sql="SELECT * FROM role WHERE roleName=?"
+    return request.query(sql,[name]);
+}
 async function getRole()
 {
     let sql="SELECT * FROM role WHERE idRole>1"
@@ -133,6 +138,7 @@ async function deleteFreight(id)
 
 exports.getLoad=getLoad;
 exports.getRole=getRole;
+exports.getRoleName=getRoleName;
 exports.getCompany=getCompany;
 exports.getCompanyId=getCompanyId;
 exports.getCompanyEmail=getCompanyEmail;

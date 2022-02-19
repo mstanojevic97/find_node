@@ -20,7 +20,7 @@ router.get("/producer",async(req,res)=>{
 });
 //kad se uloguje prevoznik
 router.get("/supplier",async(req,res)=>{
-    const id= req.body.id;
+    const id= 1;
     const supplier=await getCompanyId(id);
     const freightTaken=await getFreightSupplierTaken(id);
     const freightFree=await getFreightSupplierFree();
@@ -30,9 +30,9 @@ router.get("/supplier",async(req,res)=>{
         email:supplier[0].email
     }
     res.json({
-        "supplier":supplierData,
-        "freightFree":freightFree,
-        "freightTaken":freightTaken
+        supplier:supplierData,
+        freightFree:freightFree,
+        freightTaken:freightTaken
     });
 });
 //kad se uloguje admin

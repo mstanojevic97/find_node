@@ -3,7 +3,7 @@ const router = express.Router();
 const { getCompanyId, getFreightProducerFree, getFreightProducerTaken, getFreightSupplierTaken, deleteFreight}=require("../dbService/dbService");
 
 router.get("/admin/freights",async (req,res)=>{
-    const id = req.body.id;
+    const id = 1;
     const company = await getCompanyId(id);
     let freightFree = [];
     let freightTaken = [];
@@ -16,9 +16,9 @@ router.get("/admin/freights",async (req,res)=>{
         freightTaken = await getFreightSupplierTaken(id);
     }
     res.json({
-        "data": company,
-        "freightTaken": freightTaken,
-        "freightFree": freightFree
+        data: company,
+        freightTaken: freightTaken,
+        freightFree: freightFree
     });
 });
 router.post("/admin/freights", async (req, res)=>{

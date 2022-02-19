@@ -3,19 +3,20 @@ const router = express.Router();
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('../../config')
-const {sendCompany, getRole, getCompanyEmail, getAdminEmail}=require("../dbService/dbService");
+const {sendCompany, getRole, getCompanyEmail, getAdminEmail, getRoleName}=require("../dbService/dbService");
 
 router.get("/role", async(req,res)=>{
     const role = await getRole();
-    res.send(role);
+    res.json(role);
 });
 router.post("/register", async(req,res)=>{
     const name = req.body.name
     const vat = req.body.vat
     const email = req.body.email
     const password = req.body.password
-    const roleId = req.body.roleId
-
+    const roleName = req.body.roleName
+    const role = await getRoleName(roleName);
+    const roleId = role[0].idRole;
     const company=await getCompanyEmail(email);
     if(company.length != 0){
         res.status(409)
