@@ -25,7 +25,8 @@ router.post("/register", async(req,res)=>{
     else{
         const passwordHash = bcrypt.hashSync(password, 10)
         await sendCompany(name,vat,email,passwordHash,roleId);
-        res.json("http://localhost:5000/auth/role");
+        res.status(200);
+        res.send();
     }
 });
 router.post("/login", async(req,res)=>{
