@@ -25,8 +25,7 @@ router.post("/register", async(req,res)=>{
     else{
         const passwordHash = bcrypt.hashSync(password, 10)
         await sendCompany(name,vat,email,passwordHash,roleId);
-        res.status(204)
-        res.send("Uspesna registracija");
+        res.json("http://localhost:5000/auth/role");
     }
 });
 router.post("/login", async(req,res)=>{
