@@ -44,17 +44,17 @@ router.post("/login", async(req,res)=>{
                                     },
                                     config.jwtSecretToken)
 
-            return res.send('Bearer ' + token)
+            return res.send(JSON.stringify('Bearer ' + token))
         }
         else{
             res.status(401)
-            return res.send("Pogresna lozinka!")
+            return res.send(JSON.stringify("Pogresna lozinka!"))
         }
     }
     const admin = await getAdminEmail(email)
     if(!admin || admin.length === 0){
         res.status(401)
-        return res.send("Pogresan email!")
+        return res.send(JSON.stringify("Pogresan email!"))
     }
     else {
         if(admin && admin.length > 0 && bcrypt.compareSync(password, admin[0].password)){
@@ -67,11 +67,11 @@ router.post("/login", async(req,res)=>{
             },
             config.jwtSecretToken)
 
-            return res.send('Bearer ' + token)
+            return res.send(JSON.stringify('Bearer ' + token))
         }
         else{
             res.status(401)
-            return res.send("Pogresna lozinka!")
+            return res.send(JSON.stringify("Pogresna lozinka!"))
         }
     }
 });
