@@ -37,12 +37,12 @@ router.get("/supplier",async(req,res)=>{
 });
 //kad se uloguje admin
 router.get("/admin",async(req,res)=>{
-    const email = req.body.email;
+    const email = 'nikola.ilic774@gmail.com';
     const admin=await getAdminEmail(email);
     const companies = await getCompany();
     res.json({
-        "admin":admin,
-        "companies":companies
+        admin:admin[0],
+        companies:companies
     });
 });
 // promena podataka proizvodjaca
