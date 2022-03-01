@@ -3,7 +3,7 @@ const router = express.Router();
 const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight} =require("../dbService/dbService");
 //kad se uloguje proizvodjac
 router.get("/producer",async(req,res)=>{
-    const id = req.body.id;// id se vadi iz jwt tokena :D
+    const id = 1;// id se vadi iz jwt tokena :D
     const producer=await getCompanyId(id);
     const producerData={
         companyName:producer[0].companyName,
@@ -13,9 +13,9 @@ router.get("/producer",async(req,res)=>{
     const freightTaken = await getFreightProducerTaken(id);
     const freightFree = await getFreightProducerFree(id);
     res.json({
-        "producer": producerData,
-        "freightFree":freightFree,
-        "freightTaken":freightTaken
+        producer: producerData,
+        freightFree:freightFree,
+        freightTaken:freightTaken
     });
 });
 //kad se uloguje prevoznik
@@ -37,7 +37,7 @@ router.get("/supplier",async(req,res)=>{
 });
 //kad se uloguje admin
 router.get("/admin",async(req,res)=>{
-    const email = 'nikola.ilic774@gmail.com';
+    const email = 'admin@gmail.com';
     const admin=await getAdminEmail(email);
     const companies = await getCompany();
     res.json({

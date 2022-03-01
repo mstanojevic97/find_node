@@ -92,7 +92,7 @@ async function getFreightProducerTaken(id)
 }
 async function getFreightProducerFree(id)
 {
-    let sql="SELECT freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,status.statusName,find.load.loadType FROM ((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad) WHERE idProducer=? && idSupplier IS NULL;"
+    let sql="SELECT freight.idFreight,freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,status.statusName,find.load.loadType FROM ((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad) WHERE idProducer=? && idSupplier IS NULL;"
     return request.query(sql,[id]);
 }
 async function getFreightSupplierFree()
