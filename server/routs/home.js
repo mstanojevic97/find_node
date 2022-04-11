@@ -1,9 +1,14 @@
 const express = require ('express');
 const router = express.Router();
+const {authMiddleware, authRole} = require('../middleware/auth')
+const {ROLE} = require('../roles')
 const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight} =require("../dbService/dbService");
 //kad se uloguje proizvodjac
-router.get("/producer",async(req,res)=>{
-    const id = 1;// id se vadi iz jwt tokena :D
+router.get("/producer",
+authMiddleware,
+authRole([ROLE.PRODUCER]),
+async(req,res)=>{
+    const id = req.user.sub;
     const producer=await getCompanyId(id);
     const producerData={
         companyName:producer[0].companyName,

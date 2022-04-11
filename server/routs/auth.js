@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const config = require('../../config')
+const config = require('config');
 const {sendCompany, getRole, getCompanyEmail, getAdminEmail, getRoleName}=require("../dbService/dbService");
 
 router.get("/role", async(req,res)=>{
@@ -44,7 +44,7 @@ router.post("/login", async(req,res)=>{
                                     },
                                     config.jwtSecretToken)
 
-            return res.send(JSON.stringify('Bearer ' + token))
+            return res.send(JSON.stringify('Bearer '+token))
         }
         else{
             res.status(401)
@@ -67,7 +67,7 @@ router.post("/login", async(req,res)=>{
             },
             config.jwtSecretToken)
 
-            return res.send(JSON.stringify('Bearer ' + token))
+            return res.send(JSON.stringify('Bearer '+token))
         }
         else{
             res.status(401)
