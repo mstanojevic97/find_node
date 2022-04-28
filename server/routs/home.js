@@ -62,10 +62,11 @@ router.post("/producer/update",async(req,res)=>{
     res.send("Uspesna izmena");
 });
 //dodavanje novog tereta
-router.post('/producer/add',async(req,res)=>{
-    const id = req.body.id; // jwt
-    const load = req.body.load;
-    const loadType = await getLoad(load);
+router.post('/producer/add',
+authMiddleware,
+authRole([ROLE.PRODUCER]),
+async(req,res)=>{
+    const id = req.user.sub;
     const data={
         weight:req.body.weight,
         length:req.body.length,
@@ -74,10 +75,10 @@ router.post('/producer/add',async(req,res)=>{
         note:req.body.note,
         price:req.body.price,
         idProducer:id,
-        idLoad:loadType[0].idLoad
+        idLoad:req.body.load
     }
     const report =await sendFreight (data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idProducer,data.idLoad);
-    res.send("Uspesan upis");
+    return res.json({})
 });
 //ucitava teret za promenu
 router.get ('/producer/edit',async(req,res)=>{
@@ -148,4 +149,5 @@ router.post("/supplier/confirm",async(req, res)=>{
     await takeFreight(idCompany,idFreight);
     res.send("Uspesna konfirmacija!");
 });
+
 module.exports=router;  

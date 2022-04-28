@@ -105,6 +105,13 @@ async function getFreightSupplierTaken(id)
     let sql="SELECT freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,load.loadType, find.company.companyName,find.company.VAT,find.company.email, load.loadType FROM (((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad)INNER JOIN find.company ON freight.idProducer=find.company.idCompany) WHERE idSupplier=?;"
     return request.query(sql,[id]);
 }
+
+async function getLoads()
+{
+    sql= "SELECT * FROM find.load"
+    return request.query(sql,[]);
+}
+
 async function takeFreight(idSuplier,idFreight)
 {
     let sql="UPDATE find.freight SET freight.idSupplier=?, freight.idStatus=2 WHERE freight.idFreight=?"
@@ -157,6 +164,7 @@ exports.getFreightProducerFree=getFreightProducerFree;
 exports.getFreightProducerTaken=getFreightProducerTaken;
 exports.getFreightSupplierFree=getFreightSupplierFree;
 exports.getFreightSupplierTaken=getFreightSupplierTaken;
+exports.getLoads = getLoads;
 exports.takeFreight=takeFreight;
 exports.updateFreight=updateFreight;
 exports.getFreightId=getFreightId;
