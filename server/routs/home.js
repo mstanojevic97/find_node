@@ -91,6 +91,7 @@ router.get ('/producer/edit',async(req,res)=>{
         destination:freight[0].destination,
         note:freight[0].note,
         price:freight[0].price,
+        idLoad:freight[0].idLoad,
         loadType:freight[0].loadType
     }
     res.json({
@@ -100,14 +101,12 @@ router.get ('/producer/edit',async(req,res)=>{
         destination:data.destination,
         note:data.note,
         price:data.price,
+        idLoad:data.idLoad,
         loadType:data.loadType
     });
 });
 //izmena tereta 
 router.post ('/producer/edit',async(req,res)=>{
-    const idFreight = req.body.idFreight;
-    const load = req.body.load;
-    const loadType = await getLoad(load);
     const data={
         weight:req.body.weight,
         length:req.body.length,
@@ -115,11 +114,11 @@ router.post ('/producer/edit',async(req,res)=>{
         destination:req.body.destination,
         note:req.body.note,
         price:req.body.price,
-        idLoad:loadType[0].idLoad,
-        idFreight:idFreight
+        idLoad:req.body.idLoad,
+        idFreight:req.body.idFreight
     }
     await updateFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idLoad,data.idFreight);
-    res.send("Uspesna izmena");
+    return res.status(200).json({message: 'Ok'});
 });
 // izmena podataka prevoznika
 router.post("/supplier/update",async(req,res)=>{
