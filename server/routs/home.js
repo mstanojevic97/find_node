@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const {authMiddleware, authRole} = require('../middleware/auth')
 const {ROLE} = require('../roles')
-const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight} =require("../dbService/dbService");
+const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight, deleteFreight} =require("../dbService/dbService");
 //kad se uloguje proizvodjac
 router.get("/producer",
 authMiddleware,
@@ -11,6 +11,7 @@ async(req,res)=>{
     const id = req.user.sub;
     const producer=await getCompanyId(id);
     const producerData={
+        idCompany: producer[0].idCompany,
         companyName:producer[0].companyName,
         VAT:producer[0].VAT,
         email:producer[0].email
@@ -23,6 +24,7 @@ async(req,res)=>{
         freightTaken:freightTaken
     });
 });
+
 //kad se uloguje prevoznik
 router.get("/supplier",async(req,res)=>{
     const id= 1;
@@ -50,16 +52,16 @@ router.get("/admin",async(req,res)=>{
         companies:companies
     });
 });
-// promena podataka proizvodjaca
-router.post("/producer/update",async(req,res)=>{
-    const id = req.body.id; // iz jwt
+// promena podataka kompanije
+router.post("/company/update",async(req,res)=>{
+    const idCompany = req.body.idCompany;
     const updateData ={
         companyName:req.body.companyName,
         VAT:req.body.VAT,
         email:req.body.email
     }
-    const report = await updateCompany (id,updateData.companyName,updateData.VAT,updateData.email);
-    res.send("Uspesna izmena");
+    const report = await updateCompany (idCompany,updateData.companyName,updateData.VAT,updateData.email);
+    res.json({message:"Uspesna izmena"});
 });
 //dodavanje novog tereta
 router.post('/producer/add',
@@ -78,7 +80,15 @@ async(req,res)=>{
         idLoad:req.body.load
     }
     const report =await sendFreight (data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idProducer,data.idLoad);
-    return res.json({})
+    return res.json({});
+});
+router.post('/producer/delete',
+authMiddleware,
+authRole([ROLE.PRODUCER]),
+async(req,res)=>{
+    const id = req.body.idFreight;
+    await deleteFreight(id);
+    return res.json("ok");
 });
 //ucitava teret za promenu
 router.get ('/producer/edit',async(req,res)=>{
@@ -119,17 +129,6 @@ router.post ('/producer/edit',async(req,res)=>{
     }
     await updateFreight(data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idLoad,data.idFreight);
     return res.status(200).json({message: 'Ok'});
-});
-// izmena podataka prevoznika
-router.post("/supplier/update",async(req,res)=>{
-    const id = req.body.id; // iz jwt
-    const updateData ={
-        companyName:req.body.companyName,
-        VAT:req.body.VAT,
-        email:req.body.email
-    }
-    const report = await updateCompany (id,updateData.companyName,updateData.VAT,updateData.email);
-    res.send("Uspesna izmena");
 });
 
 router.post("/supplier/finish",async(req,res)=>{
