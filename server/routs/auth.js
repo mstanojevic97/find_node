@@ -44,7 +44,12 @@ router.post("/login", async(req,res)=>{
                                     },
                                     config.jwtSecretToken)
 
-            return res.send(JSON.stringify('Bearer '+token))
+            return res.send(JSON.stringify({
+                data:'Bearer '+token,
+                role:company[0].idRol,
+                idCompany:company[0].idCompany
+
+        }))
         }
         else{
             res.status(401)

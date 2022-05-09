@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const {authMiddleware, authRole} = require('../middleware/auth')
 const {ROLE} = require('../roles')
-const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight, deleteFreight} =require("../dbService/dbService");
+const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight, deleteFreight, getFreightSupplierCompleted, getFreightProducerCompleted} =require("../dbService/dbService");
 //kad se uloguje proizvodjac
 router.get("/producer",
 authMiddleware,
@@ -17,21 +17,28 @@ async(req,res)=>{
         email:producer[0].email
     }
     const freightTaken = await getFreightProducerTaken(id);
+    const freightCompleted = await getFreightProducerCompleted(id);
     const freightFree = await getFreightProducerFree(id);
     res.json({
         producer: producerData,
         freightFree:freightFree,
-        freightTaken:freightTaken
+        freightTaken:freightTaken,
+        freightCompleted:freightCompleted
     });
 });
 
 //kad se uloguje prevoznik
-router.get("/supplier",async(req,res)=>{
-    const id= 1;
+router.get("/supplier",
+authMiddleware,
+authRole([ROLE.SUPPLIER]),
+async(req,res)=>{
+    const id = req.user.sub;
     const supplier=await getCompanyId(id);
+    const freightCompleted = await getFreightSupplierCompleted(id);
     const freightTaken=await getFreightSupplierTaken(id);
     const freightFree=await getFreightSupplierFree();
     const supplierData={
+        idCompany:supplier[0].idCompany,
         companyName:supplier[0].companyName,
         VAT:supplier[0].VAT,
         email:supplier[0].email
@@ -39,7 +46,8 @@ router.get("/supplier",async(req,res)=>{
     res.json({
         supplier:supplierData,
         freightFree:freightFree,
-        freightTaken:freightTaken
+        freightTaken:freightTaken,
+        freightCompleted:freightCompleted
     });
 });
 //kad se uloguje admin
@@ -134,18 +142,18 @@ router.post ('/producer/edit',async(req,res)=>{
 router.post("/supplier/finish",async(req,res)=>{
     const id = req.body.idFreight;
     const report = await finishFreight(id);
-    res.send("Zavrsena isporuka!");
+    res.json({});
 });
 router.post("/supplier/cancel", async(req,res)=>{
     const id = req.body.idFreight;
     const report = await cancelFreight(id);
-    res.send("Uspesno ste otkazali!");
+    res.json({});
 });
 router.post("/supplier/confirm",async(req, res)=>{
     const idCompany = req.body.idCompany;
     const idFreight = req.body.idFreight;
     await takeFreight(idCompany,idFreight);
-    res.send("Uspesna konfirmacija!");
+    res.json({});
 });
 
 module.exports=router;  
