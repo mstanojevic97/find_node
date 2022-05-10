@@ -87,7 +87,7 @@ async function getFreight()
 }
 async function getFreightProducerTaken(id)
 {       
-    let sql="SELECT freight.idFreight, freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,find.company.companyName,find.company.VAT,find.company.email,status.statusName,find.load.loadType FROM (((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad)INNER JOIN find.company ON freight.idSupplier=find.company.idCompany) WHERE idProducer=?;"
+    let sql="SELECT freight.idFreight, freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,find.company.companyName,find.company.VAT,find.company.email,status.statusName,find.load.loadType FROM (((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad)INNER JOIN find.company ON freight.idSupplier=find.company.idCompany) WHERE idProducer=? && freight.idStatus=2;"
     return request.query(sql,[id]);
 }
 async function getFreightProducerCompleted(id)

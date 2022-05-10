@@ -51,7 +51,10 @@ async(req,res)=>{
     });
 });
 //kad se uloguje admin
-router.get("/admin",async(req,res)=>{
+router.get("/admin",
+authMiddleware,
+authRole([ROLE.ADMIN]),
+async(req,res)=>{
     const email = 'admin@gmail.com';
     const admin=await getAdminEmail(email);
     const companies = await getCompany();
