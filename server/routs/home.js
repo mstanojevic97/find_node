@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const {authMiddleware, authRole} = require('../middleware/auth')
 const {ROLE} = require('../roles')
-const {getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getLoad, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight, deleteFreight, getFreightSupplierCompleted, getFreightProducerCompleted} =require("../dbService/dbService");
+const {deleteCompany, updateAdmin, getCompany, getCompanyId,getFreightProducerTaken,getFreightProducerFree,getFreightSupplierFree,getFreightSupplierTaken, takeFreight,getAdminEmail,updateCompany, getCompletedFreights, sendFreight, finishFreight, getFreightId, updateFreight, cancelFreight, deleteFreight, getFreightSupplierCompleted, getFreightProducerCompleted} =require("../dbService/dbService");
 //kad se uloguje proizvodjac
 router.get("/producer",
 authMiddleware,
@@ -55,14 +55,27 @@ router.get("/admin",
 authMiddleware,
 authRole([ROLE.ADMIN]),
 async(req,res)=>{
-    const email = 'admin@gmail.com';
-    const admin=await getAdminEmail(email);
+    const dataa = req.user.email;
+    const data = await getAdminEmail(dataa);
     const companies = await getCompany();
+    const completed = await getCompletedFreights();
+    const admin = data[0];
     res.json({
-        admin:admin[0],
-        companies:companies
+        admin:admin,
+        companies:companies,
+        completed:completed
     });
 });
+router.post("/admin/update", async(req,res) =>{
+    const idAdmin = req.body.idAdmin;
+    const data = {
+        name:req.body.name,
+        surname:req.body.surname,
+        email:req.body.email
+    }
+    await updateAdmin(data.name, data.surname, data.email, idAdmin);
+    res.json({});
+})
 // promena podataka kompanije
 router.post("/company/update",async(req,res)=>{
     const idCompany = req.body.idCompany;
@@ -93,14 +106,21 @@ async(req,res)=>{
     const report =await sendFreight (data.weight,data.length,data.warehouse,data.destination,data.note,data.price,data.idProducer,data.idLoad);
     return res.json({});
 });
-router.post('/producer/delete',
-authMiddleware,
-authRole([ROLE.PRODUCER]),
-async(req,res)=>{
+router.post('/producer/delete',async(req,res)=>{
     const id = req.body.idFreight;
     await deleteFreight(id);
-    return res.json("ok");
+    return res.json({});
 });
+router.post('/admin/deleteCompany',
+authMiddleware,
+authRole([ROLE.ADMIN]),
+async(req,res)=>{
+    const id = req.body.id;
+    await deleteCompany(id);
+    res.json({
+        message:"Company deleted successfully!"
+    });
+})
 //ucitava teret za promenu
 router.get ('/producer/edit',async(req,res)=>{
     const idFreight = req.body.idFreight; // vadimo onClick

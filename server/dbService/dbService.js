@@ -60,10 +60,10 @@ async function sendAdmin(adminName,surname,email,password)
     let sql="INSERT INTO admin (name,surname,email,password,idRol) VALUES(?,?,?,?,1)"
     return request.query(sql,[adminName,surname,email,password])
 }
-async function updateAdmin(adminName,surname,email,password,idAdmin)
+async function updateAdmin(adminName,surname,email, idAdmin)
 {
-    let sql="UPDATE admin SET name=?,surname=?,email=?,password=? WHERE idAdmin=?"
-    return request.query(sql,[adminName,surname,email,password,idAdmin]);
+    let sql="UPDATE admin SET name=?,surname=?,email=? WHERE idAdmin=?"
+    return request.query(sql,[adminName,surname,email,idAdmin]);
 }
 async function deleteAdmin(id)
 {
@@ -115,6 +115,11 @@ async function getFreightSupplierCompleted(id)
     let sql="SELECT freight.idFreight,freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,status.statusName,load.loadType, find.company.companyName,find.company.VAT,find.company.email, load.loadType FROM (((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad)INNER JOIN find.company ON freight.idProducer=find.company.idCompany) WHERE idSupplier=? && freight.idStatus=3;"
     return request.query(sql,[id]);
 }
+async function getCompletedFreights()
+{
+    let sql="SELECT freight.idFreight,freight.weight,freight.length,freight.warehouse,freight.destination,freight.note,freight.price,status.statusName,load.loadType, find.company.companyName,find.company.VAT,find.company.email, load.loadType FROM (((freight INNER JOIN status ON freight.idStatus=status.idStatus) INNER JOIN find.load ON freight.idLoad=find.load.idLoad)INNER JOIN find.company ON freight.idProducer=find.company.idCompany) WHERE freight.idStatus=3;"
+    return request.query(sql,[]);
+}
 
 async function getLoads()
 {
@@ -153,6 +158,7 @@ async function deleteFreight(id)
     return request.query(sql,[id]);
 }
 
+exports.getCompletedFreights=getCompletedFreights;
 exports.getFreightProducerCompleted=getFreightProducerCompleted;
 exports.getFreightSupplierCompleted=getFreightSupplierCompleted;
 exports.getLoad=getLoad;
