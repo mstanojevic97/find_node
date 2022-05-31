@@ -10,7 +10,6 @@ app.use(express.json());
 initPool();
 app.use("/test", (req, res)=>{
     res.send({
-        Developer: "Nikola",
         Language:"NODE + REACT"
     });
 });
